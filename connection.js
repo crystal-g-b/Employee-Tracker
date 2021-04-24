@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+const { restoreDefaultPrompts } = require('inquirer');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -66,9 +67,56 @@ const startApp = () => {
 };
 
 const allDept = () => {
+    const query = 'SELECT * FROM department';
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        console.log('All Departments');
+        console.table(res);
+        startApp();
+    });
+};
+
+const allEmployees = () => {
+    const query = 'SELECT * FROM employee';
+    connection.query(query, (err, res) => {
+        if(err) throw err;
+        console.log('All Employees');
+        console.table(res);
+        startApp();
+    });
+};
+
+const EmployeesByManager = () => {
     inquirer
-        .prompt({
-            
-        })
+        .prompt([
+            {
+                name: 'managerName',
+                type: 'list',
+                choices() {
+                    const managerArray = [];
+                    results.forEach(({last_name}) => {
+                        managerArray.push(last_name);
+                    });
+                    return managerArray;
+                },
+                message: 'Please select manager name', 
+            },
+        ])
+        .then((answer) => {
+            let chosenManager = 
+                `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.department_name FROM employee LEFT JOIN role on role_id
+                FROM employee LEFT JOIN role on role.id = employee.role_id
+                LEFT JOIN department on department.id = r.department_id
+                LEFT JOIN employee on employee.manager_id = employee.first_name and employee.last_name
+                WHERE CONCAT (employee.first_name, ' ', employee.last_name = ?)
+                ORDER BY emplpoyee.id`;
+            connection.query(chosenManager, [answer.managerName], (err, res) => {
+                if(err) throw err;
+                console.table(res);
+                startApp();
+            }); 
+        });
 }
+
+startApp();
 
