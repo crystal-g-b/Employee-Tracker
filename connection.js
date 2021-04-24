@@ -65,3 +65,10 @@ const startApp = () => {
         });
 };
 
+const allDept = () => {
+    inquirer
+        .prompt({
+            
+        })
+}
+
