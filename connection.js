@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-const { restoreDefaultPrompts } = require('inquirer');
+const consoleTable = require('console.table');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -116,7 +116,31 @@ const EmployeesByManager = () => {
                 startApp();
             }); 
         });
-}
+};
+
+const addDept = () => {
+    inquirer
+        .prompt([
+           {
+                name: 'newDepartment',
+                type: 'input',
+               message: 'What is the name of the Department?',
+           },
+        ])
+        .then((answer) => {
+            connection.query(
+                'INSERT INTO department SET ?',
+                {
+                    deparment_name: answer.newDepartment
+                },
+                (err) => {
+                    if (err) throw err;
+                    console.log('Your Department was successfully created!');
+                    startApp();
+                }
+            );
+        });
+};
 
 startApp();
 
