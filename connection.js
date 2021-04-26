@@ -1,6 +1,9 @@
+const express = require('express')
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
+
+const app = express();
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -10,15 +13,20 @@ const connection = mysql.createConnection({
   database: 'employee_trackerDB',
 });
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 connection.connect((err) => {
     if (err) throw err;
+    console.log(`Connected as ID ${connection.threadId}`);
+    startApp();
 });
 
-const startApp = () => {
+function startApp() {
     inquirer
         .prompt([
             {
-                name: "action",
+                name: "menu",
                 type: "list",
                 message: "Welcome! What would you like to do?",
                 choices: [
@@ -30,12 +38,12 @@ const startApp = () => {
                     'Add Departments',
                     'Add Role',
                     'Add Employee',
-                    'Update Employee role',
+                    'Update Employee',
                 ]
             },
         ])
         .then((answer) => {
-            switch (answer.action) {
+            switch (answer.menu) {
                 case 'View all Departments':
                     allDept();
                     break; 
@@ -51,16 +59,16 @@ const startApp = () => {
                 case 'View Employee Role':
                     employeeRole();
                     break;
-                case 'Add Departments':
+                case 'Add Departments?':
                     addDept();
                     break;
-                case 'Add Role':
+                case 'Add Role?':
                     addRole();
                     break;
-                case 'Add Employee':
+                case 'Add Employee?':
                     addEmployee();
                     break;
-                case 'Update Employee role':
+                case 'Update Employee':
                     updateRole();
                     break;  
             }
@@ -79,10 +87,18 @@ const allDept = () => {
 
 
 const allEmployees = () => {
-    const query = 'SELECT * FROM employee';
+    const query = "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id";
     connection.query(query, (err, res) => {
         if(err) throw err;
-        console.log('All Employees');
+        console.table(res);
+        startApp();
+    });
+};
+
+const employeeRole = () => {
+    const query = " SELECT role.title, role.salary, AS Department FROM department INNER JOIN department on department.id = role.department_id";
+    connection.query(query, (err, res) => {
+        if(err) throw err;
         console.table(res);
         startApp();
     });
