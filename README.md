@@ -24,7 +24,9 @@
   Once these packages are installed along with their depencies the user must ensure that their start script is saved in their `package.json`. Once that is confirmed, the user can enter `npm start` on the command line and they are prompted with a menu of options to select from.
 
   Please see Demo below and link to see the app in action
-  
+  * ![Employee Tracker Demo](/ASSETS/TrackerDemo.mp4)
+
+  * [Employee Tracker App](https://drive.google.com/file/d/1GE8l-FpfwKKDhLq2kGGJxfj9Fn_dZjJp/view?usp=sharing)
   
   ## Usage
 
