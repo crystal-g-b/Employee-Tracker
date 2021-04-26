@@ -19,17 +19,17 @@ CREATE TABLE role (
     DELETE CASCADE
 );
 
-CREATE TABLE employee (
-    id INT NOT NULL AUTO_INCREMENT,
-    first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    role_id INT NOT NULL,
-    manager_id INT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (role_id) REFERENCES role (id) ON 
+CREATE TABLE employee(
+	id INT NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(30) NOT NULL,
+	last_name VARCHAR(30) NOT NULL,
+	role_id INT NOT NULL,
+	manager_id INTEGER,
+	PRIMARY KEY(id),
+	FOREIGN KEY(role_id) REFERENCES role (id) ON 
     DELETE CASCADE,
-    FOREIGN KEY (manager_id) REFERENCES employee (id) ON 
-    DELETE CASCADE,
+	FOREIGN KEY (manager_id) REFERENCES employee (id) ON 
+    DELETE CASCADE
 );
 
 --EMPLOYEE TRACKER SEEDS
@@ -52,9 +52,9 @@ INSERT INTO role (title, salary, department_id) values ('SVP', 150000, 4);
 
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Shana', 'Wayne', 2, 1);
-INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Matthew', 'Carp', 4, 2);
-INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Kayla', 'Mathis', 6, 3);
-INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Mary', 'Goliath', 7, NULL);
+INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Matthew', 'Carp', 1, null);
+INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Kayla', 'Mathis', 5, 6);
+INSERT INTO employee (first_name, last_name, role_id, manager_id) values ('Mary', 'Goliath', 9, null);
 
 SELECT * FROM department_id;
 SELECT * FROM role;
