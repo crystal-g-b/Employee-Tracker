@@ -12,27 +12,28 @@ const connection = mysql.createConnection({
 
 connection.connect((err) => {
     if (err) throw err;
-    startApp();
 });
 
 const startApp = () => {
     inquirer
-        .prompt({
-            name: "action",
-            type: "list",
-            message: "Welcome! What would you like to do?",
-            choices: [
-                'View all Departments',
-                'View all Employees',
-                'View all Employees By Manager',
-                'View all Employees By Department',
-                'View Employee Role',
-                'Add Departments',
-                'Add Role',
-                'Add Employee',
-                'Update Employee role',
-            ],
-        })
+        .prompt([
+            {
+                name: "action",
+                type: "list",
+                message: "Welcome! What would you like to do?",
+                choices: [
+                    'View all Departments',
+                    'View all Employees',
+                    'View all Employees By Manager',
+                    'View all Employees By Department',
+                    'View Employee Role',
+                    'Add Departments',
+                    'Add Role',
+                    'Add Employee',
+                    'Update Employee role',
+                ]
+            },
+        ])
         .then((answer) => {
             switch (answer.action) {
                 case 'View all Departments':
@@ -75,6 +76,7 @@ const allDept = () => {
         startApp();
     });
 };
+
 
 const allEmployees = () => {
     const query = 'SELECT * FROM employee';
@@ -136,10 +138,58 @@ const addDept = () => {
                 (err) => {
                     if (err) throw err;
                     console.log('Your Department was successfully created!');
+                    console.table(res);
                     startApp();
                 }
             );
         });
+};
+
+const addRole = () => {
+    const query = 'SELECT * FROM role; SELECT * FROM department';
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'newTitle',
+                    type: 'input',
+                    message: 'Please enter new Title:',  
+                },
+                {
+                    name: 'newSalary',
+                    type: 'input',
+                    message: 'Please enter salary for new Title:',
+                },
+                {
+                    name: 'addDepartment',
+                    type: 'list',
+                    choices: function() {
+                        let choiceArray = results[1].map(choice => choice.department_name);
+                        return choiceArray;
+                    },
+                    message: 'Please select a Department:'
+                }
+
+            ])
+            .then((answer) => {
+                connection.query(
+                    'INSERT INTO role SET ?',
+                    {
+                        title: answer.newTitle,
+                        salary: answer.newSalary,
+                        department_id: answer.addDepartment        
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log('Your Role was successfully created!');
+                        console.table(res);
+                        startApp();
+                    },
+                );
+            });
+    });
+    
 };
 
 startApp();
