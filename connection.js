@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: /*'enter your password'*/,
+  password: 'Gisselle12#',//ENTER YOUR PASSWORD
   database: 'employee_trackerDB',
 });
 
